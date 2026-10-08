@@ -1,7 +1,6 @@
 package com.propel.tiffin.ui.list
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -26,9 +25,8 @@ import com.propel.tiffin.ui.theme.PaperWhite
 @Composable
 fun KitchenCard(kitchen: Kitchen, onClick: () -> Unit, modifier: Modifier = Modifier) {
     OutlinedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.outlinedCardColors(containerColor = PaperWhite),
         border = BorderStroke(1.dp, Carbon),
