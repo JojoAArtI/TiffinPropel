@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.propel.tiffin.ui.screens.RenderProofScreen
+import com.propel.tiffin.ui.nav.TiffinApp
 import com.propel.tiffin.ui.theme.TiffinTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TiffinTheme {
-                RenderProofScreen()
+                TiffinApp()
             }
         }
     }
