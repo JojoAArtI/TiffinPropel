@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.propel.tiffin.app-debug-54:/font_anton_regular.ttf.flat",
+        "source": "com.propel.tiffin.app-main-56:/font/anton_regular.ttf"
+    },
+    {
+        "merged": "com.propel.tiffin.app-debug-54:/font_inter_bold.ttf.flat",
+        "source": "com.propel.tiffin.app-main-56:/font/inter_bold.ttf"
+    },
+    {
+        "merged": "com.propel.tiffin.app-debug-54:/font_inter_medium.ttf.flat",
+        "source": "com.propel.tiffin.app-main-56:/font/inter_medium.ttf"
+    }
+]
