@@ -93,6 +93,10 @@ The UI is a clean, image-forward food-delivery look modelled on Swiggy (see [des
 
 Fonts: Inter (OFL), bundled in `app/src/main/res/font/`.
 
+| List | Detail | Paywall |
+|------|--------|---------|
+| ![List](screenshots/list.png) | ![Detail](screenshots/detail.png) | ![Paywall](screenshots/paywall.png) |
+
 ### Food images
 The 12 food photos in `app/src/main/assets/food/` are from Wikimedia Commons (Creative Commons licensed), one per kitchen, roughly matching each cuisine (masala dosa, paneer butter masala, biryani, etc.). They're loaded with Coil as local assets — no network needed.
 
@@ -105,4 +109,4 @@ The 12 food photos in `app/src/main/assets/food/` are from Wikimedia Commons (Cr
 - [TASK2.md](TASK2.md) — the four bugs in the agent-written list code, and the fix.
 - [TASK3.md](TASK3.md) — the release note.
 - [TASK4.md](TASK4.md) — how I used AI.
-- Screen recording: `tiffin_demo.mp4` — shows list browsing, live search, cuisine chip filter, detail screen with menu, subscribe → paywall → purchase burst → "SUBSCRIBED ✓", and force-stop + relaunch proving the paywall doesn't return.
+- Screen recording (< 90s) — list browsing, live search, cuisine chip filter, detail screen with menu, subscribe → paywall → purchase burst → "SUBSCRIBED ✓", and force-stop + relaunch proving the paywall doesn't return.
