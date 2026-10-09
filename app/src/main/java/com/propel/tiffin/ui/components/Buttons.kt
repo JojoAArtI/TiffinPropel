@@ -1,6 +1,7 @@
 package com.propel.tiffin.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,9 +41,10 @@ fun StickerButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.stickerPress(interactionSource),
         shape = Pill,
         colors = ButtonDefaults.buttonColors(
             containerColor = Carbon,
@@ -54,7 +57,8 @@ fun StickerButton(
             hoveredElevation = 0.dp,
             focusedElevation = 0.dp
         ),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+        interactionSource = interactionSource
     ) {
         Text(
             text = text.uppercase(),
@@ -69,9 +73,10 @@ fun GhostButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.stickerPress(interactionSource),
         shape = Pill,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = PaperWhite,
@@ -84,7 +89,8 @@ fun GhostButton(
             hoveredElevation = 0.dp,
             focusedElevation = 0.dp
         ),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+        interactionSource = interactionSource
     ) {
         Text(
             text = text.uppercase(),

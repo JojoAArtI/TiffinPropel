@@ -28,7 +28,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -50,6 +52,7 @@ import com.propel.tiffin.ui.theme.Spacing
 @Composable
 fun DetailScreen(
     kitchenId: String,
+    isPaid: Boolean,
     onBack: () -> Unit,
     onSubscribe: (String) -> Unit
 ) {
@@ -74,6 +77,7 @@ fun DetailScreen(
                 is DetailUiState.NotFound -> DetailNotFound(onBack)
                 is DetailUiState.Content -> DetailContent(
                     kitchen = current.kitchen,
+                    isPaid = isPaid,
                     onBack = onBack,
                     onSubscribe = onSubscribe,
                     bottomPadding = navBarPadding.calculateBottomPadding()
@@ -135,6 +139,7 @@ private fun DetailNotFound(onBack: () -> Unit) {
 @Composable
 private fun DetailContent(
     kitchen: Kitchen,
+    isPaid: Boolean,
     onBack: () -> Unit,
     onSubscribe: (String) -> Unit,
     bottomPadding: androidx.compose.ui.unit.Dp
@@ -213,11 +218,23 @@ private fun DetailContent(
                 )
                 .padding(bottom = bottomPadding)
         ) {
-            StickerButton(
-                text = "Subscribe",
-                onClick = { onSubscribe(kitchen.id) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (isPaid) {
+                GhostButton(
+                    text = "Subscribed ✓",
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                val haptic = LocalHapticFeedback.current
+                StickerButton(
+                    text = "Subscribe",
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onSubscribe(kitchen.id)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }

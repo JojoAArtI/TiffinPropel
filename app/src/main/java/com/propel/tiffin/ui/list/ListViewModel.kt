@@ -19,6 +19,9 @@ class ListViewModel(
     private val _uiState = MutableStateFlow<ListUiState>(ListUiState.Loading)
     val uiState: StateFlow<ListUiState> = _uiState
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     private var listViewedFired = false
 
     init {
@@ -42,6 +45,23 @@ class ListViewModel(
             } catch (e: Exception) {
                 _uiState.value = ListUiState.Error(e.message ?: "Something went wrong")
             }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            try {
+                val kitchens = repo.getKitchens()
+                if (kitchens.isEmpty()) {
+                    _uiState.value = ListUiState.Empty
+                } else {
+                    _uiState.value = ListUiState.Content(kitchens)
+                }
+            } catch (e: Exception) {
+                _uiState.value = ListUiState.Error(e.message ?: "Something went wrong")
+            }
+            _isRefreshing.value = false
         }
     }
 

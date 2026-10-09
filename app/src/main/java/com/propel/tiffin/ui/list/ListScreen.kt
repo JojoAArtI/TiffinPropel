@@ -19,8 +19,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,6 +49,7 @@ fun ListScreen(onKitchenClick: (String) -> Unit) {
     val container = (context.applicationContext as TiffinApplication).container
     val viewModel: ListViewModel = viewModel(factory = ListViewModelFactory(container))
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -86,6 +89,8 @@ fun ListScreen(onKitchenClick: (String) -> Unit) {
             )
             is ListUiState.Content -> ContentList(
                 kitchens = current.kitchens,
+                isRefreshing = isRefreshing,
+                onRefresh = viewModel::refresh,
                 onKitchenClick = onKitchenClick
             )
         }
@@ -191,26 +196,34 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ContentList(
     kitchens: List<com.propel.tiffin.data.model.Kitchen>,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onKitchenClick: (String) -> Unit
 ) {
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
-    LazyColumn(
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            end = 16.dp,
-            top = 12.dp,
-            bottom = 16.dp + navBarPadding.calculateBottomPadding()
-        ),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh
     ) {
-        items(kitchens, key = { it.id }) { kitchen ->
-            KitchenCard(
-                kitchen = kitchen,
-                onClick = { onKitchenClick(kitchen.id) }
-            )
+        LazyColumn(
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                top = 12.dp,
+                bottom = 16.dp + navBarPadding.calculateBottomPadding()
+            ),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(kitchens, key = { it.id }) { kitchen ->
+                KitchenCard(
+                    kitchen = kitchen,
+                    onClick = { onKitchenClick(kitchen.id) }
+                )
+            }
         }
     }
 }
