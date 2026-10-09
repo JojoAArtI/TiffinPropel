@@ -6,6 +6,7 @@
     "pricePerTiffin": 80,
     "veg": true,
     "rating": 4.7,
+    "imageAsset": "food/k01.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Idli Sambar with Coconut Chutney"},
       {"day": "Tue", "dish": "Masala Dosa with Potato Filling"},
@@ -23,6 +24,7 @@
     "pricePerTiffin": 100,
     "veg": true,
     "rating": 4.5,
+    "imageAsset": "food/k02.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Aloo Gobi with Roti and Dal"},
       {"day": "Tue", "dish": "Paneer Bhurji with Paratha"},
@@ -40,6 +42,7 @@
     "pricePerTiffin": 110,
     "veg": false,
     "rating": 4.8,
+    "imageAsset": "food/k03.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Aloo Posto with Bhaat and Dal"},
       {"day": "Tue", "dish": "Macher Jhol with Steamed Rice"},
@@ -57,6 +60,7 @@
     "pricePerTiffin": 90,
     "veg": true,
     "rating": 4.3,
+    "imageAsset": "food/k04.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Undhiyu with Puri and Shrikhand"},
       {"day": "Tue", "dish": "Dal Dhokli with Pickle"},
@@ -74,6 +78,7 @@
     "pricePerTiffin": 95,
     "veg": false,
     "rating": 4.6,
+    "imageAsset": "food/k05.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Pitla Bhakri with Thecha"},
       {"day": "Tue", "dish": "Misal Pav with Onion"},
@@ -91,6 +96,7 @@
     "pricePerTiffin": 120,
     "veg": false,
     "rating": 4.4,
+    "imageAsset": "food/k06.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Butter Chicken with Naan"},
       {"day": "Tue", "dish": "Dal Makhani with Jeera Rice"},
@@ -108,6 +114,7 @@
     "pricePerTiffin": 85,
     "veg": true,
     "rating": 4.1,
+    "imageAsset": "food/k07.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Dal Baati Churma"},
       {"day": "Tue", "dish": "Gatte Ki Sabzi with Roti"},
@@ -125,6 +132,7 @@
     "pricePerTiffin": 75,
     "veg": true,
     "rating": 3.9,
+    "imageAsset": "food/k08.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Aloo Matar with Roti and Rice"},
       {"day": "Tue", "dish": "Palak Paneer with Chapati"},
@@ -142,6 +150,7 @@
     "pricePerTiffin": 140,
     "veg": false,
     "rating": 4.9,
+    "imageAsset": "food/k09.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Chicken Biryani with Mirchi Ka Salan"},
       {"day": "Tue", "dish": "Mutton Dalcha with Steamed Rice"},
@@ -159,6 +168,7 @@
     "pricePerTiffin": 105,
     "veg": false,
     "rating": 4.5,
+    "imageAsset": "food/k10.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Fish Molee with Appam"},
       {"day": "Tue", "dish": "Avial with Matta Rice and Sambar"},
@@ -176,6 +186,7 @@
     "pricePerTiffin": 60,
     "veg": true,
     "rating": 3.6,
+    "imageAsset": "food/k11.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Lauki Ki Sabzi with Dal and Roti"},
       {"day": "Tue", "dish": "Aloo Bhujia with Rice and Pickle"},
@@ -193,6 +204,7 @@
     "pricePerTiffin": 95,
     "veg": false,
     "rating": 4.2,
+    "imageAsset": "food/k12.jpg",
     "weeklyMenu": [
       {"day": "Mon", "dish": "Aloo Pitika with Masor Tenga and Rice"},
       {"day": "Tue", "dish": "Chicken Curry with Steamed Rice"},

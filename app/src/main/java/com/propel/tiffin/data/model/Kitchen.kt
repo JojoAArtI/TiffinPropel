@@ -10,6 +10,7 @@ data class Kitchen(
     val pricePerTiffin: Int,
     val veg: Boolean,
     val rating: Double,
+    val imageAsset: String = "",
     val weeklyMenu: List<MenuItem>
 )
 
