@@ -1,6 +1,0 @@
-R_DEF: Internal format may change without notice
-local
-font anton_regular
-font inter_bold
-font inter_medium
-style Theme.Tiffin
