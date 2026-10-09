@@ -15,7 +15,7 @@ I built to a ~4-hour core and cut deliberately. An honest cut beats a half-finis
 - **No delivery-slot / weekly-ordering flow.** Paid users conceptually unlock slots, but a slot-picker isn't one of the three required screens. It's the obvious next feature, not part of the core.
 - **No network layer.** The brief says no backend, so there's no Retrofit/OkHttp stack to fake. Data is read from `assets/kitchens.json`.
 - **Tests are scoped to the money logic only.** I unit-tested the trial-date calculation (the thing that, if wrong, charges people on the wrong day). I did not write UI or instrumented tests — those are the first thing I'd add next, but they're lower-value than the app itself inside the budget.
-- **The Error state is reachable via a hidden trigger, not a real network failure** (there's no network). Long-press the "KITCHENS" hero to force the Error → Retry path so it's demonstrable. The Empty state is implemented but won't appear with the bundled data.
+- **The Error state is reachable via a hidden trigger, not a real network failure** (there's no network). Long-press the "Tiffin" header on the list to force the Error → Retry path so it's demonstrable. The Empty state is implemented but won't appear with the bundled data.
 
 ---
 
@@ -45,8 +45,8 @@ No API keys or secrets are required.
 
 ## How it works
 
-- **List** — kitchens from `assets/kitchens.json` (name, cuisine, price, veg/non-veg, rating). Real Loading (skeleton), Empty, and Error (with Retry) states, plus pull-to-refresh.
-- **Detail** — one kitchen, its 7-day weekly menu, and a Subscribe button.
+- **List** — kitchens from `assets/kitchens.json` (name, cuisine, price, veg/non-veg, rating) as image-led cards. Live search (by name/cuisine) and tappable cuisine filter chips. Real Loading (skeleton), Empty, and Error (with Retry) states, plus pull-to-refresh.
+- **Detail** — one kitchen: hero photo, header (rating, cuisine, price), the week's menu (read-only), and a Subscribe button.
 - **Paywall** — opens on the **third launch** and on any **Subscribe** tap. States, in words, that **₹1 is charged today and ₹249/month starts automatically on a named date 24 hours later**. The purchase is faked but **persisted**; the paywall never reappears once paid, and a subscribed user sees "SUBSCRIBED ✓" instead.
 
 ### Persistence
@@ -89,9 +89,12 @@ MainActivity → TiffinApp (NavHost)
 
 ## Design
 
-The UI follows the "Slush" sticker-book language (see [design.md](design.md)): pastel section bands, 1dp black hand-cut outlines on everything, the Anton display face at crushed leading, a six-colour sticker palette, pill buttons, flat fills — no shadows, no gradients, no dark mode. CTAs are black-fill or outlined-black; blue is decorative only. Six playful touches: sticker-burst on purchase, a scrolling marquee, squishy button/card press, deterministic collage card tilt, haptics on the money actions, and pull-to-refresh.
+The UI is a clean, image-forward food-delivery look modelled on Swiggy (see [design.md](design.md)): white image-led cards with real food photos, green rating pills, the standard veg/non-veg square marks, an orange (`#FC8019`) accent for CTAs and highlights, light theme only. The list has a working search (filters kitchens live by name/cuisine) and tappable cuisine category chips; the detail screen is a restaurant page with a hero photo, header, and the week's menu; the paywall is a clean white sheet with an orange CTA. Primary CTAs are orange, ratings green. A celebratory sticker-burst plays on a successful purchase, plus haptics on the money action and pull-to-refresh on the list.
 
-Fonts are bundled (Anton for display, Inter for UI, both OFL) in `app/src/main/res/font/`.
+Fonts: Inter (OFL), bundled in `app/src/main/res/font/`.
+
+### Food images
+The 12 food photos in `app/src/main/assets/food/` are from Wikimedia Commons (Creative Commons licensed), one per kitchen, roughly matching each cuisine (masala dosa, paneer butter masala, biryani, etc.). They're loaded with Coil as local assets — no network needed.
 
 ---
 
