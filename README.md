@@ -1,79 +1,62 @@
 # Tiffin
 
-An Android app for ordering a daily tiffin from home kitchens nearby. Free users browse; a ₹1 trial unlocks the subscription, which rolls over to ₹249/month 24 hours later. Built for the Propel · Spark Android Developer Intern take-home.
+A Jetpack Compose Android app for ordering daily tiffin from home kitchens nearby. Browse kitchens for free; a ₹1 trial unlocks the subscription, rolling over to ₹249/month after 24 hours. Built for the Propel Spark Android Developer Intern take-home.
 
-Single-module Jetpack Compose app, Kotlin, `minSdk 24`. No backend — twelve kitchens ship as a local JSON asset.
+Single-module, Kotlin, `minSdk 24`. No backend — twelve kitchens ship as a local JSON asset.
 
----
-
-## What I cut, and why
-
-I built to a ~4-hour core and cut deliberately. An honest cut beats a half-finished screen.
-
-- **No Room / SQLite.** Three flags (`isPaid`, `launchCount`, `trialStartedAt`) and a flat 12-row catalog don't need a relational DB. DataStore covers every persistence requirement, including surviving force-stop. A DB would be ceremony with no payoff here.
-- **No Hilt.** One module doesn't earn a DI framework. A hand-written `AppContainer` built in `Application` is faster to write and read. Hilt pays off at scale, not at this size.
-- **No delivery-slot / weekly-ordering flow.** Paid users conceptually unlock slots, but a slot-picker isn't one of the three required screens. It's the obvious next feature, not part of the core.
-- **No network layer.** The brief says no backend, so there's no Retrofit/OkHttp stack to fake. Data is read from `assets/kitchens.json`.
-- **Tests are scoped to the money logic only.** I unit-tested the trial-date calculation (the thing that, if wrong, charges people on the wrong day). I did not write UI or instrumented tests — those are the first thing I'd add next, but they're lower-value than the app itself inside the budget.
-- **The Error state is reachable via a hidden trigger, not a real network failure** (there's no network). Long-press the "Tiffin" header on the list to force the Error → Retry path so it's demonstrable. The Empty state is implemented but won't appear with the bundled data.
+| List | Detail | Paywall |
+|------|--------|---------|
+| ![List](screenshots/list.png) | ![Detail](screenshots/detail.png) | ![Paywall](screenshots/paywall.png) |
 
 ---
 
-## Build & run
+## Build and run
 
-Requires Android Studio (Koala or newer) and an Android SDK with platform 35.
+Needs Android Studio (Koala+) and Android SDK platform 35.
 
-1. Open the project in Android Studio and let Gradle sync, **or** build from the command line.
-2. Create `local.properties` in the project root if it doesn't exist, pointing at your SDK:
+1. Open in Android Studio and sync, or build from the command line.
+2. Create `local.properties` if missing:
    ```
    sdk.dir=/absolute/path/to/Android/sdk
    ```
-3. Build the debug APK:
-   ```bash
-   ./gradlew assembleDebug
-   ```
-   Output: `app/build/outputs/apk/debug/app-debug.apk`
-4. Run the unit tests:
-   ```bash
-   ./gradlew testDebugUnitTest
-   ```
-5. Or press **Run ▶** on an emulator / device (API 24+).
+3. Build: `./gradlew assembleDebug`
+4. Test: `./gradlew testDebugUnitTest`
+5. Or press Run on an emulator or device (API 24+).
 
-No API keys or secrets are required.
+No API keys or secrets required.
 
 ---
 
 ## How it works
 
-- **List** — kitchens from `assets/kitchens.json` (name, cuisine, price, veg/non-veg, rating) as image-led cards. Live search (by name/cuisine) and tappable cuisine filter chips. Real Loading (skeleton), Empty, and Error (with Retry) states, plus pull-to-refresh.
-- **Detail** — one kitchen: hero photo, header (rating, cuisine, price), the week's menu (read-only), and a Subscribe button.
-- **Paywall** — opens on the **third launch** and on any **Subscribe** tap. States, in words, that **₹1 is charged today and ₹249/month starts automatically on a named date 24 hours later**. The purchase is faked but **persisted**; the paywall never reappears once paid, and a subscribed user sees "SUBSCRIBED ✓" instead.
+- **List** — image-led kitchen cards from `assets/kitchens.json`. Live search by name or cuisine, tappable cuisine filter chips, skeleton loading, empty and error states, pull-to-refresh.
+- **Detail** — hero photo, rating, cuisine, price, the week's menu (read-only), and a Subscribe button.
+- **Paywall** — opens on the third launch or any Subscribe tap. States that ₹1 is charged today and ₹249/month starts on a named date 24 hours later. The purchase is faked but persisted; once paid, the paywall never reappears and the detail shows "SUBSCRIBED ✓".
 
 ### Persistence
-Three layers, each with a job:
+
 | Layer | Holds | Survives |
 |---|---|---|
-| `ViewModel` + `StateFlow` | current UI state | rotation |
-| `SavedStateHandle` / nav args | selected kitchen id | process death in memory |
-| **DataStore (Preferences)** | `isPaid`, `launchCount`, `trialStartedAt` | process death **and** force-stop (on disk) |
+| ViewModel + StateFlow | UI state | rotation |
+| SavedStateHandle / nav args | selected kitchen id | process death |
+| DataStore (Preferences) | `isPaid`, `launchCount`, `trialStartedAt` | force-stop (on disk) |
 
-The money-critical flag `isPaid` lives in DataStore specifically so it survives force-stop + reopen.
+`isPaid` lives in DataStore so it survives force-stop and reopen.
 
-### Analytics — the four moments
-`analytics/Analytics.kt` is a single interface with a Logcat implementation (`LogcatAnalytics`, tag `TiffinAnalytics`). It's called at exactly four events, which together give the whole trial funnel plus attribution:
+### Analytics
 
-1. **`ListViewed`** — catalog rendered (reach / top of funnel).
-2. **`KitchenViewed(kitchenId)`** — a Detail opened (interest; which kitchens).
-3. **`PaywallShown(trigger)`** — paywall offer shown; `trigger` is `third_launch` or `subscribe_tap` (exposure + which path drives it).
-4. **`PurchaseCompleted`** — fake purchase succeeded (conversion).
+Four events (tag `TiffinAnalytics`), enough for the full trial funnel:
 
-With these four you can compute list→detail→paywall→purchase conversion and tell whether the third-launch nudge or the subscribe tap converts better.
+1. `ListViewed` — catalog rendered.
+2. `KitchenViewed(kitchenId)` — detail opened.
+3. `PaywallShown(trigger)` — `third_launch` or `subscribe_tap`.
+4. `PurchaseCompleted` — purchase succeeded.
 
 ---
 
 ## Architecture
 
-MVVM, unidirectional data flow, Compose + Material3.
+MVVM, unidirectional data flow, Compose + Material 3.
 
 ```
 MainActivity → TiffinApp (NavHost)
@@ -84,21 +67,28 @@ MainActivity → TiffinApp (NavHost)
   Analytics (interface) ◄── LogcatAnalytics
 ```
 
-- Manual DI via `di/AppContainer.kt`, created in `TiffinApplication`.
-- `kotlinx.serialization` for the JSON asset; `java.time` for the trial date (core-library desugaring enabled for API 24/25).
+Manual DI via `AppContainer`, created in `TiffinApplication`. `kotlinx.serialization` for JSON; `java.time` for the trial date (core-library desugaring for API 24/25).
+
+---
 
 ## Design
 
-The UI is a clean, image-forward food-delivery look modelled on Swiggy (see [design.md](design.md)): white image-led cards with real food photos, green rating pills, the standard veg/non-veg square marks, an orange (`#FC8019`) accent for CTAs and highlights, light theme only. The list has a working search (filters kitchens live by name/cuisine) and tappable cuisine category chips; the detail screen is a restaurant page with a hero photo, header, and the week's menu; the paywall is a clean white sheet with an orange CTA. Primary CTAs are orange, ratings green. A celebratory sticker-burst plays on a successful purchase, plus haptics on the money action and pull-to-refresh on the list.
+Swiggy-inspired look (see [design.md](design.md)): white cards with real food photos, green rating pills, veg/non-veg marks, orange (`#FC8019`) CTAs. Inter font (OFL), bundled. A sticker-burst animation plays on purchase, with haptics on the money action.
 
-Fonts: Inter (OFL), bundled in `app/src/main/res/font/`.
+The 12 food photos in `app/src/main/assets/food/` are from Wikimedia Commons (Creative Commons), loaded with Coil as local assets.
 
-| List | Detail | Paywall |
-|------|--------|---------|
-| ![List](screenshots/list.png) | ![Detail](screenshots/detail.png) | ![Paywall](screenshots/paywall.png) |
+---
 
-### Food images
-The 12 food photos in `app/src/main/assets/food/` are from Wikimedia Commons (Creative Commons licensed), one per kitchen, roughly matching each cuisine (masala dosa, paneer butter masala, biryani, etc.). They're loaded with Coil as local assets — no network needed.
+## What I cut
+
+I built to a roughly four-hour core and cut deliberately.
+
+- **No Room.** Three flags and a flat 12-row catalog don't need a relational DB. DataStore covers it.
+- **No Hilt.** One module doesn't earn a DI framework. A hand-written `AppContainer` is faster to write and read.
+- **No delivery-slot flow.** Obvious next feature, but not one of the three required screens.
+- **No network layer.** The brief says no backend.
+- **Tests cover the money logic only.** The trial-date calculation is the thing that, if wrong, charges people on the wrong day. UI and instrumented tests would be the first addition.
+- **The Error state uses a hidden trigger** (long-press the "Tiffin" header) since there's no real network to fail.
 
 ---
 
@@ -109,4 +99,4 @@ The 12 food photos in `app/src/main/assets/food/` are from Wikimedia Commons (Cr
 - [TASK2.md](TASK2.md) — the four bugs in the agent-written list code, and the fix.
 - [TASK3.md](TASK3.md) — the release note.
 - [TASK4.md](TASK4.md) — how I used AI.
-- Screen recording (< 90s) — list browsing, live search, cuisine chip filter, detail screen with menu, subscribe → paywall → purchase burst → "SUBSCRIBED ✓", and force-stop + relaunch proving the paywall doesn't return.
+- Screen recording: list browsing, live search, cuisine chip filter, detail with menu, subscribe, paywall, purchase burst, "SUBSCRIBED ✓", and force-stop + relaunch proving the paywall doesn't return.
