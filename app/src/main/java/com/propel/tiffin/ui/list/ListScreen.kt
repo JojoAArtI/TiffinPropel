@@ -2,7 +2,6 @@ package com.propel.tiffin.ui.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +15,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,14 +35,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.propel.tiffin.TiffinApplication
+import com.propel.tiffin.data.model.Kitchen
+import com.propel.tiffin.ui.components.CategoryChip
 import com.propel.tiffin.ui.components.GhostButton
-import com.propel.tiffin.ui.components.MarqueeBanner
-import com.propel.tiffin.ui.theme.Carbon
-import com.propel.tiffin.ui.theme.ConcreteGray
-import com.propel.tiffin.ui.theme.PaperWhite
-import com.propel.tiffin.ui.theme.SkyWash
-import com.propel.tiffin.ui.theme.SoftMist
-import com.propel.tiffin.ui.theme.Spacing
+import com.propel.tiffin.ui.components.TiffinSearchBar
+import com.propel.tiffin.ui.theme.Divider
+import com.propel.tiffin.ui.theme.Surface
+import com.propel.tiffin.ui.theme.SurfaceMuted
+import com.propel.tiffin.ui.theme.SwiggyOrange
+import com.propel.tiffin.ui.theme.TextPrimary
+import com.propel.tiffin.ui.theme.TextSecondary
+import com.propel.tiffin.ui.theme.TextTertiary
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -54,29 +59,27 @@ fun ListScreen(onKitchenClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(PaperWhite)
+            .background(Surface)
+            .statusBarsPadding()
     ) {
-        MarqueeBanner()
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(SkyWash)
                 .combinedClickable(
                     onClick = {},
                     onLongClick = { viewModel.simulateError() }
                 )
-                .padding(Spacing.lg)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Text(
-                text = "KITCHENS",
-                style = MaterialTheme.typography.displayMedium,
-                color = Carbon
+                text = "Tiffin",
+                style = MaterialTheme.typography.titleLarge,
+                color = TextPrimary
             )
             Text(
-                text = "home kitchens near you",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Carbon
+                text = "Home-cooked meals near you",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextTertiary
             )
         }
 
@@ -88,7 +91,7 @@ fun ListScreen(onKitchenClick: (String) -> Unit) {
                 onRetry = viewModel::retry
             )
             is ListUiState.Content -> ContentList(
-                kitchens = current.kitchens,
+                viewModel = viewModel,
                 isRefreshing = isRefreshing,
                 onRefresh = viewModel::refresh,
                 onKitchenClick = onKitchenClick
@@ -101,7 +104,7 @@ fun ListScreen(onKitchenClick: (String) -> Unit) {
 private fun LoadingContent() {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         repeat(4) {
             SkeletonCard()
@@ -111,37 +114,36 @@ private fun LoadingContent() {
 
 @Composable
 private fun SkeletonCard() {
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(16.dp)
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(SoftMist)
-            .border(1.dp, Carbon, shape)
-            .padding(20.dp)
+            .background(SurfaceMuted)
+            .padding(12.dp)
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.6f)
-                .height(20.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(ConcreteGray)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.35f)
-                .height(14.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(ConcreteGray)
-        )
-        Spacer(modifier = Modifier.height(14.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .height(24.dp)
+                .fillMaxWidth()
+                .height(100.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(ConcreteGray)
+                .background(Divider)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .height(16.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Divider)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.4f)
+                .height(12.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Divider)
         )
     }
 }
@@ -151,22 +153,20 @@ private fun EmptyContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(Spacing.lg),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "🍱", style = MaterialTheme.typography.displayLarge)
-        Spacer(modifier = Modifier.height(Spacing.sm))
         Text(
             text = "No kitchens nearby",
-            style = MaterialTheme.typography.headlineSmall,
-            color = Carbon
+            style = MaterialTheme.typography.titleMedium,
+            color = TextPrimary
         )
-        Spacer(modifier = Modifier.height(Spacing.xxs))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "We're expanding to your area soon",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Carbon
+            style = MaterialTheme.typography.bodyMedium,
+            color = TextSecondary
         )
     }
 }
@@ -176,22 +176,22 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(Spacing.lg),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Couldn't load kitchens",
-            style = MaterialTheme.typography.headlineSmall,
-            color = Carbon
+            style = MaterialTheme.typography.titleMedium,
+            color = TextPrimary
         )
-        Spacer(modifier = Modifier.height(Spacing.xxs))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyMedium,
-            color = Carbon
+            color = TextSecondary
         )
-        Spacer(modifier = Modifier.height(Spacing.md))
+        Spacer(modifier = Modifier.height(20.dp))
         GhostButton(text = "Retry", onClick = onRetry)
     }
 }
@@ -199,30 +199,100 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ContentList(
-    kitchens: List<com.propel.tiffin.data.model.Kitchen>,
+    viewModel: ListViewModel,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onKitchenClick: (String) -> Unit
 ) {
+    val query by viewModel.query.collectAsStateWithLifecycle()
+    val selectedCuisine by viewModel.selectedCuisine.collectAsStateWithLifecycle()
+    val cuisines by viewModel.cuisines.collectAsStateWithLifecycle()
+    val visible by viewModel.visibleKitchens.collectAsStateWithLifecycle()
+    val hasFilters by viewModel.hasActiveFilters.collectAsStateWithLifecycle()
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
+
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh
     ) {
         LazyColumn(
             contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 12.dp,
                 bottom = 16.dp + navBarPadding.calculateBottomPadding()
-            ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            )
         ) {
-            items(kitchens, key = { it.id }) { kitchen ->
-                KitchenCard(
-                    kitchen = kitchen,
-                    onClick = { onKitchenClick(kitchen.id) }
+            item {
+                TiffinSearchBar(
+                    value = query,
+                    onValueChange = viewModel::onQueryChange,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
+            }
+
+            item {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    items(cuisines) { (cuisine, imageAsset) ->
+                        CategoryChip(
+                            label = cuisine,
+                            imageUrl = "file:///android_asset/$imageAsset",
+                            selected = selectedCuisine == cuisine,
+                            onClick = { viewModel.onCuisineSelected(cuisine) }
+                        )
+                    }
+                }
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Divider)
+                )
+            }
+
+            if (visible.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Top rated near you",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = TextPrimary,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                    )
+                }
+
+                items(visible, key = { it.id }) { kitchen ->
+                    RestaurantCard(
+                        kitchen = kitchen,
+                        onClick = { onKitchenClick(kitchen.id) },
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+            } else if (hasFilters) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 48.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "No kitchens match your search",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = TextSecondary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TextButton(onClick = viewModel::clearFilters) {
+                            Text(
+                                text = "Clear filters",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = SwiggyOrange
+                            )
+                        }
+                    }
+                }
             }
         }
     }
