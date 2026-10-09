@@ -105,4 +105,4 @@ The 12 food photos in `app/src/main/assets/food/` are from Wikimedia Commons (Cr
 - [TASK2.md](TASK2.md) — the four bugs in the agent-written list code, and the fix.
 - [TASK3.md](TASK3.md) — the release note.
 - [TASK4.md](TASK4.md) — how I used AI.
-- A screen recording (< 90s) showing the three screens and the paywall not returning after payment.
+- Screen recording: `tiffin_demo.mp4` — shows list browsing, live search, cuisine chip filter, detail screen with menu, subscribe → paywall → purchase burst → "SUBSCRIBED ✓", and force-stop + relaunch proving the paywall doesn't return.
