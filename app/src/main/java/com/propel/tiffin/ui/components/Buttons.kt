@@ -2,10 +2,8 @@ package com.propel.tiffin.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -14,26 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.propel.tiffin.ui.theme.Carbon
-import com.propel.tiffin.ui.theme.PaperWhite
-import com.propel.tiffin.ui.theme.Pill
-import com.propel.tiffin.ui.theme.TiffinTheme
-
-@Preview(showBackground = true)
-@Composable
-private fun ButtonsPreview() {
-    TiffinTheme {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(16.dp)
-        ) {
-            StickerButton(text = "Get Started", onClick = {})
-            GhostButton(text = "Browse", onClick = {})
-        }
-    }
-}
+import com.propel.tiffin.ui.theme.Divider
+import com.propel.tiffin.ui.theme.Surface
+import com.propel.tiffin.ui.theme.SwiggyOrange
+import com.propel.tiffin.ui.theme.TextPrimary
 
 @Composable
 fun StickerButton(
@@ -45,18 +28,12 @@ fun StickerButton(
     Button(
         onClick = onClick,
         modifier = modifier.stickerPress(interactionSource),
-        shape = Pill,
+        shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Carbon,
-            contentColor = PaperWhite
+            containerColor = SwiggyOrange,
+            contentColor = Surface
         ),
-        border = BorderStroke(1.dp, Carbon),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            hoveredElevation = 0.dp,
-            focusedElevation = 0.dp
-        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
         interactionSource = interactionSource
     ) {
@@ -77,18 +54,12 @@ fun GhostButton(
     OutlinedButton(
         onClick = onClick,
         modifier = modifier.stickerPress(interactionSource),
-        shape = Pill,
+        shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = PaperWhite,
-            contentColor = Carbon
+            containerColor = Surface,
+            contentColor = TextPrimary
         ),
-        border = BorderStroke(1.dp, Carbon),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            hoveredElevation = 0.dp,
-            focusedElevation = 0.dp
-        ),
+        border = BorderStroke(1.dp, Divider),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
         interactionSource = interactionSource
     ) {

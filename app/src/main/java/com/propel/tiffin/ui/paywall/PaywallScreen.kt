@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,13 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.propel.tiffin.TiffinApplication
-import com.propel.tiffin.ui.components.GhostButton
-import com.propel.tiffin.ui.components.MarqueeBanner
 import com.propel.tiffin.ui.components.StickerBurst
-import com.propel.tiffin.ui.components.StickerButton
-import com.propel.tiffin.ui.theme.PaperWhite
-import com.propel.tiffin.ui.theme.Spacing
-import com.propel.tiffin.ui.theme.VoltageViolet
+import com.propel.tiffin.ui.theme.Surface
+import com.propel.tiffin.ui.theme.SwiggyOrange
+import com.propel.tiffin.ui.theme.TextPrimary
+import com.propel.tiffin.ui.theme.TextSecondary
+import com.propel.tiffin.ui.theme.TextTertiary
 
 @Composable
 fun PaywallScreen(
@@ -51,31 +54,27 @@ fun PaywallScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(VoltageViolet)
+            .background(Surface)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            MarqueeBanner()
-
-            when (val current = state) {
-                is PaywallUiState.Offer -> PaywallOffer(
-                    chargeDateText = current.chargeDateText,
-                    onStartTrial = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.confirmPurchase()
-                    },
-                    onDismiss = onDismiss,
-                    bottomPadding = navBarPadding.calculateBottomPadding()
-                )
-                is PaywallUiState.AlreadyPaid -> PaywallAlreadyPaid(
-                    onDismiss = onDismiss,
-                    bottomPadding = navBarPadding.calculateBottomPadding()
-                )
-                is PaywallUiState.JustPurchased -> PaywallJustPurchased(
-                    chargeDate = current.chargeDate,
-                    onDismiss = onDismiss,
-                    bottomPadding = navBarPadding.calculateBottomPadding()
-                )
-            }
+        when (val current = state) {
+            is PaywallUiState.Offer -> PaywallOffer(
+                chargeDateText = current.chargeDateText,
+                onStartTrial = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    viewModel.confirmPurchase()
+                },
+                onDismiss = onDismiss,
+                bottomPadding = navBarPadding.calculateBottomPadding()
+            )
+            is PaywallUiState.AlreadyPaid -> PaywallAlreadyPaid(
+                onDismiss = onDismiss,
+                bottomPadding = navBarPadding.calculateBottomPadding()
+            )
+            is PaywallUiState.JustPurchased -> PaywallJustPurchased(
+                chargeDate = current.chargeDate,
+                onDismiss = onDismiss,
+                bottomPadding = navBarPadding.calculateBottomPadding()
+            )
         }
 
         if (state is PaywallUiState.JustPurchased) {
@@ -94,42 +93,53 @@ private fun PaywallOffer(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = Spacing.lg)
+            .padding(horizontal = 24.dp)
             .padding(bottom = bottomPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "HOME-COOKED\nGOODNESS",
-            style = MaterialTheme.typography.displayLarge,
-            color = PaperWhite,
+            text = "Unlock home-cooked meals",
+            style = MaterialTheme.typography.titleLarge,
+            color = TextPrimary,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(Spacing.md))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = "You'll be charged ₹1 today.\nYour ₹249/month plan starts\nautomatically on $chargeDateText.",
             style = MaterialTheme.typography.bodyLarge,
-            color = PaperWhite,
+            color = TextSecondary,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(Spacing.xl))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        StickerButton(
-            text = "Start ₹1 Trial",
+        Button(
             onClick = onStartTrial,
-            modifier = Modifier.fillMaxWidth()
-        )
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = SwiggyOrange,
+                contentColor = Surface
+            )
+        ) {
+            Text(
+                text = "START ₹1 TRIAL",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
 
-        Spacer(modifier = Modifier.height(Spacing.sm))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        GhostButton(
-            text = "Not Now",
-            onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth()
-        )
+        TextButton(onClick = onDismiss) {
+            Text(
+                text = "Not now",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextTertiary
+            )
+        }
     }
 }
 
@@ -141,34 +151,43 @@ private fun PaywallAlreadyPaid(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = Spacing.lg)
+            .padding(horizontal = 24.dp)
             .padding(bottom = bottomPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "YOU'RE IN!",
-            style = MaterialTheme.typography.displayLarge,
-            color = PaperWhite,
+            text = "You're subscribed",
+            style = MaterialTheme.typography.titleLarge,
+            color = TextPrimary,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(Spacing.md))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = "Your trial is active.\nEnjoy home-cooked meals!",
             style = MaterialTheme.typography.bodyLarge,
-            color = PaperWhite,
+            color = TextSecondary,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(Spacing.xl))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        StickerButton(
-            text = "Browse Kitchens",
+        Button(
             onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth()
-        )
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = SwiggyOrange,
+                contentColor = Surface
+            )
+        ) {
+            Text(
+                text = "BROWSE KITCHENS",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
     }
 }
 
@@ -181,33 +200,42 @@ private fun PaywallJustPurchased(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = Spacing.lg)
+            .padding(horizontal = 24.dp)
             .padding(bottom = bottomPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "YOU'RE IN!",
-            style = MaterialTheme.typography.displayLarge,
-            color = PaperWhite,
+            text = "You're in!",
+            style = MaterialTheme.typography.titleLarge,
+            color = TextPrimary,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(Spacing.md))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = "₹1 charged now.\n₹249 on $chargeDate unless you cancel.",
             style = MaterialTheme.typography.bodyLarge,
-            color = PaperWhite,
+            color = TextSecondary,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(Spacing.xl))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        StickerButton(
-            text = "Browse Kitchens",
+        Button(
             onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth()
-        )
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = SwiggyOrange,
+                contentColor = Surface
+            )
+        ) {
+            Text(
+                text = "BROWSE KITCHENS",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
     }
 }
